@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prerich</title>
+  <link rel="stylesheet" href="reset.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <h1>Prerich</h1>
+  <p>
+    Join the mailing list
+  </p>
+  <div class="actions">
+    <div id="actions-tweet" aria-hidden="false">
+      <p>
+        Tweet about us first!
+      </p>
+      <a id="tweet" class="button button-twitter" href="https://twitter.com/intent/tweet?text=Hello%20world"
+        target="_blank" rel="noopener noreferrer">
+        <i></i>
+        <span class="label">Tweet</span>
+      </a>
+    </div>
+
+
+    <div style="display: none;" id="actions-form">
+      <form>
+        <input class="email-input" placeholder="Enter your email" />
+        <button id="join" class="button">Sign me up!</button>
+      </form>
+    </div>
+
+  </div>
+
+  <script>
+    window.addEventListener("load", () => {
+      const tweetAction = document.getElementById('actions-tweet');
+      const tweetButton = document.getElementById('tweet');
+      const formAction = document.getElementById('actions-form');
+
+      const setHidden = (element, hidden) => {
+        element.setAttribute('aria-hidden', hidden);
+        element.style.display = hidden ? 'none' : 'block'
+      }
+
+
+      const onTweet = () => {
+        setHidden(tweetAction, true);
+        setHidden(formAction, false);
+
+      };
+
+      tweetButton.addEventListener('click', onTweet);
+    });
+  </script>
+
+</body>
+
+</html>
