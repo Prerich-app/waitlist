@@ -12,59 +12,72 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
     rel="stylesheet">
-
 </head>
 
-<body class="font-inter">
+<body>
   <img class="logo" src="./assets/logo.png" alt="Prerich" />
-  <p id="description">
-    Pre join the waitlist
+  <p>
+    {{ state == 'success' ? 'You are now in the pre email list ツ' : 'Pre join the waitlist' }}
   </p>
-  <div class="actions">
-    <div id="actions-tweet" aria-hidden="false">
-      <a id="tweet" class="button button-twitter" href="https://twitter.com/intent/tweet?text=Hello%20world"
-        target="_blank" rel="noopener noreferrer">
-        <i></i>
-        <span class="label">about us first!</span>
-      </a>
-    </div>
 
-
-    <div style="display: none;" id="actions-form">
-      <form id="waitlist">
-        <input class="email-input" placeholder="Enter your email" />
-        <button id="join" class="button" type="submit">Submit</button>
-      </form>
-    </div>
+  <div v-if="state == 'tweet'" class="wrapper">
+    <a @click="onTweet" class="button button-twitter" href="https://twitter.com/intent/tweet?text=Hello%20world"
+      target="_blank" rel="noopener noreferrer">
+      <i></i>
+      <span class="label">about us first!</span>
+    </a>
   </div>
 
-  <script>
-    window.addEventListener("load", () => {
-      const description = document.getElementById('description');
-      const tweetAction = document.getElementById('actions-tweet');
-      const tweetButton = document.getElementById('tweet');
-      const formAction = document.getElementById('actions-form');
-      const form = document.getElementById('waitlist');
+  <div v-if="state == 'form'" class="wrapper">
+    <div class="inputs">
+      <input v-model.trim="email" placeholder="Enter your email" />
+      <p class="error" v-if="error">{{error}}</p>
+    </div>
+    <button v-if="!loading" id="join" class="button" @click="subscribe">
+      Submit
+    </button>
+    <button v-if="loading" class="button button--loading" disabled></button>
+  </div>
 
-      const setHidden = (element, hidden) => {
-        element.setAttribute('aria-hidden', hidden);
-        element.style.display = hidden ? 'none' : 'block'
-      }
+  <script type="module">
+    import { createApp } from 'https://unpkg.com/petite-vue?module'
 
-      const onTweet = () => {
-        setHidden(tweetAction, true);
-        setHidden(formAction, false);
-      };
+    createApp({
+      state: 'form',
+      loading: false,
+      email: '',
+      error: undefined,
+      async subscribe() {
+        this.loading = true;
+        try {
+          const res = await fetch('https://api.getwaitlist.com/api/v1/signup', {
+            method: 'POST',
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              waitlist_id: '13859',
+              email: this.email
+            })
+          });
 
-      const onSubmit = (e) => {
-        e.preventDefault();
-        setHidden(formAction, true);
-        description.innerText = 'You are now in the pre email list ツ'
-      }
+          const data = await res.json();
 
-      tweetButton.addEventListener('click', onTweet);
-      form.addEventListener("submit", onSubmit);
-    });
+          if (!res.ok) {
+            throw new Error(data.error_string ?? res.statusText);
+          }
+
+          this.state = 'success';
+        } catch (e) {
+          this.error = e?.message ?? 'Something went wrong';
+        }
+
+        this.loading = false;
+      },
+      onTweet() {
+        this.state = 'form'
+      },
+    }).mount()
   </script>
 
 </body>
