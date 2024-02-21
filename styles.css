@@ -3,6 +3,10 @@
   --button-height: 2.5em;
 }
 
+[v-cloak] {
+  display: none !important;
+}
+
 body {
   height: 100vh;
 

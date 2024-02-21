@@ -16,11 +16,14 @@
 
 <body>
   <img class="logo" src="./assets/logo.png" alt="Prerich" />
-  <p>
-    {{ state == 'success' ? 'You are now in the pre email list ツ' : 'Pre join the waitlist' }}
+  <p v-if="state == 'success'" v-cloak>
+    You are now in the pre email list ツ
+  </p>
+  <p v-else>
+    Pre join the waitlist
   </p>
 
-  <div v-if="state == 'tweet'" class="wrapper">
+  <div v-if="state == 'tweet'" class="wrapper" v-cloak>
     <a @click="onTweet" class="button button-twitter" href="https://twitter.com/intent/tweet?text=Hello%20world"
       target="_blank" rel="noopener noreferrer">
       <i></i>
@@ -28,7 +31,7 @@
     </a>
   </div>
 
-  <div v-if="state == 'form'" class="wrapper">
+  <div v-if="state == 'form'" class="wrapper" v-cloak>
     <div class="inputs">
       <input v-model.trim="email" placeholder="Enter your email" />
       <p class="error" v-if="error">{{error}}</p>
